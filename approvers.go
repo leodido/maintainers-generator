@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/repoowners"
 )
@@ -58,7 +57,7 @@ func processApprovers(v reflect.Value, out *map[string][]string) error {
 	return nil
 }
 
-func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool) error {
+func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool) (map[string][]string, error) {
 	owners, err := ownersClient.LoadRepoOwners(org, repo, "master")
 	if err != nil {
 		logrus.WithError(err).WithField("organization", org).WithField("repository", repo).Fatal("Unable to fetch OWNERS.")
@@ -66,11 +65,10 @@ func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool
 
 	approvers := getUnexportedValue(reflect.ValueOf(owners).Elem().FieldByName("approvers"))
 
-	spew.Dump(approvers)
 	result := map[string][]string{}
 	err = processApprovers(approvers, &result)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for k, values := range result {
@@ -88,7 +86,21 @@ func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool
 		result[k] = newvalues
 	}
 
-	spew.Dump(result)
+	return result, nil
+}
 
-	return nil
+// Merge two approvers maps.
+//
+// This function never replaces any key that already exists in the left map (lx).
+func mergeApprovers(lx, rx map[string][]string) map[string][]string {
+	for key, rv := range rx {
+		if lv, present := lx[key]; present {
+			// Then we don't want to replace it, append
+			lx[key] = append(lv, rv...)
+		} else {
+			// Key not in the left map so we can just shove it in
+			lx[key] = rv
+		}
+	}
+	return lx
 }

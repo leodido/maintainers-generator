@@ -9,5 +9,5 @@ var (
 
 // String returns the version.
 func String() string {
-	return fmt.Sprintf("%s-%s\n", version, commit)
+	return fmt.Sprintf("%s-%s", version, commit)
 }

@@ -52,6 +52,25 @@ For example, you could run:
 ./bin/maintainers-generator --github-token-path /etc/token --org falcosecurity
 ```
 
+Which will output a YAML like:
+
+```yaml
+- name: user1
+  github: https://github.com/user1
+  company: UNKNOWN
+  projects:
+  - https://github.com/falcosecurity/falcosecurity/community
+- name: user2
+  github: https://github.com/user2
+  company: UNKNOWN
+  projects:
+  - https://github.com/falcosecurity/falcosecurity/.github
+  - https://github.com/falcosecurity/falcosecurity/advocacy
+  - https://github.com/falcosecurity/falcosecurity/charts
+  - https://github.com/falcosecurity/falcosecurity/client-go
+  - https://github.com/falcosecurity/falcosecurity/client-rs
+```
+
 ---
 
 [![Analytics](https://ga-beacon.appspot.com/UA-49657176-1/maintainers-generator?flat)](https://github.com/igrigorik/ga-beacon)

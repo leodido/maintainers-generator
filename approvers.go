@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"sort"
 
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/prow/repoowners"
@@ -92,7 +93,7 @@ func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool
 // Merge two approvers maps.
 //
 // This function never replaces any key that already exists in the left map (lx).
-func mergeApprovers(lx, rx map[string][]string) map[string][]string {
+func mergeApprovers(lx, rx map[string][]string, sorting bool) map[string][]string {
 	for key, rv := range rx {
 		if lv, present := lx[key]; present {
 			// Then we don't want to replace it, append
@@ -100,6 +101,9 @@ func mergeApprovers(lx, rx map[string][]string) map[string][]string {
 		} else {
 			// Key not in the left map so we can just shove it in
 			lx[key] = rv
+		}
+		if sorting {
+			sort.Strings(lx[key])
 		}
 	}
 	return lx

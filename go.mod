@@ -3,8 +3,10 @@ module github.com/leodido/maintainers-generator
 go 1.14
 
 replace (
+	k8s.io/api => k8s.io/api v0.19.0
+	k8s.io/apimachinery => k8s.io/apimachinery v0.19.0
+	k8s.io/client-go => k8s.io/client-go v0.19.0
 	github.com/dgrijalva/jwt-go/v4 => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	k8s.io/client-go => k8s.io/client-go v0.19.5
 )
 
 require (

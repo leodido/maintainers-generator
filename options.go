@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/sirupsen/logrus"
 	"k8s.io/test-infra/pkg/flagutil"
@@ -12,13 +13,17 @@ import (
 
 // Options represents the flag for the current plugin
 type Options struct {
-	dryRun     bool
-	github     prowflagutil.GitHubOptions
-	hmacSecret string
-	version    bool
-	logLevel   string
-	org        string
-	repo       string
+	dryRun         bool
+	github         prowflagutil.GitHubOptions
+	hmacSecret     string
+	version        bool
+	logLevel       string
+	org            string
+	repo           string
+	dedupe         bool
+	sort           bool
+	personsFile    string
+	personsSupport bool
 }
 
 // Validate validates the receiving options.
@@ -39,6 +44,22 @@ func (o *Options) Validate() error {
 		return fmt.Errorf("specify at least a GitHub organization")
 	}
 
+	if _, err := os.Stat(o.personsFile); err == nil {
+		if filepath.Ext(o.personsFile) == "json" {
+			o.personsSupport = true
+		} else {
+			o.personsSupport = false
+			logrus.WithField("path", o.personsFile).Warn("The persons file is not JSON, disabling support")
+		}
+	} else if os.IsNotExist(err) {
+		o.personsSupport = false
+		logrus.WithField("path", o.personsFile).Warn("The persons file does not exist, disabling support")
+	} else {
+		// file may or may not exist
+		o.personsSupport = false
+		logrus.WithField("path", o.personsFile).WithError(err).Warn("The persons file may or may not exists (see error for details), disabling support")
+	}
+
 	return nil
 }
 
@@ -49,11 +70,14 @@ func NewOptions() *Options {
 	fs.BoolVar(&o.dryRun, "dry-run", true, "Dry run for testing (uses API tokens but does not mutate).")
 	fs.StringVar(&o.hmacSecret, "hmac", "/etc/webhook/hmac", "Path to the file containing the GitHub HMAC secret.")
 	fs.BoolVar(&o.version, "version", false, "Print the version.")
+	fs.BoolVar(&o.dedupe, "dedupe", true, "Whether to dedupe or not sub-project areas for every maintainer.")
+	fs.BoolVar(&o.sort, "sort", true, "Whether to sort the projects alphabetically.")
 	// fs.BoolVar(&o.enableMDYAML, "enable-mdyaml", false, "Whether to enable support for MD/YAML OWNERS files.")
 	// fs.BoolVar(&o.skipCollabor, "skip-collaborators", false, "Whether to skip collaborators for processing the maintainers.")
 	fs.StringVar(&o.logLevel, "log-level", "info", "Log level.")
 	fs.StringVar(&o.org, "org", "", "The GitHub organization name.")
 	fs.StringVar(&o.repo, "repo", "", "The GitHub repository name.")
+	fs.StringVar(&o.personsFile, "persons-db", "data/data.json", "The path to a JSON file containing handle => name/company mappings")
 
 	for _, group := range []flagutil.OptionGroup{&o.github} {
 		group.AddFlags(fs)

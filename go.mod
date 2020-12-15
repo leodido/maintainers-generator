@@ -2,7 +2,10 @@ module github.com/leodido/maintainers-generator
 
 go 1.14
 
-// Since k8s.io/test-infra pinned specific versions 
+// Pin test-infra version for all deps
+replace k8s.io/test-infra => k8s.io/test-infra v0.0.0-20201215132549-0a56371cd738
+
+// Since k8s.io/test-infra pinned specific versions
 // keep our deps in sync with https://github.com/kubernetes/test-infra/blob/master/go.mod
 replace (
 	cloud.google.com/go/pubsub => cloud.google.com/go/pubsub v1.3.1
@@ -19,9 +22,14 @@ replace (
 	k8s.io/code-generator => k8s.io/code-generator v0.19.3
 )
 
+// Other issues
+replace (
+	github.com/googleapis/gnostic/OpenAPIv2 => github.com/googleapis/gnostic/openapiv2 v0.4.1
+)
+
 require (
 	github.com/sirupsen/logrus v1.7.0
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.3.0
 	gotest.tools v2.2.0+incompatible
-	k8s.io/test-infra v0.0.0-20201215091550-bbb9e1eb2f91
+	k8s.io/test-infra v0.0.0-20201215132549-0a56371cd738
 )

@@ -1,18 +1,21 @@
 project_name: maintainers-generator
+checksum:
+  disable: true
+dist: bin
 builds:
   - id: "maintainers-generator"
     goos:
-    - linux
+      - linux
     goarch:
-    - amd64
-    - 386
-    main: ./bin/maintainers-generator
-    env:
-      - CGO_ENABLED=0
-    binary: maintainers-generator
+      - amd64
+    hooks:
+      post:
+        - make build
+        - cat /tmp/.maintainers-generator-stderr.txt
+        - mv -f bin/maintainers-generator bin/maintainers-generator_linux_amd64/
 
 changelog:
   sort: asc
   filters:
     exclude:
-    - '^deps:'
+      - "^deps:"

@@ -1,0 +1,18 @@
+project_name: maintainers-generator
+builds:
+  - id: "maintainers-generator"
+    goos:
+    - linux
+    goarch:
+    - amd64
+    - 386
+    main: ./bin/maintainers-generator
+    env:
+      - CGO_ENABLED=0
+    binary: maintainers-generator
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^deps:'

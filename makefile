@@ -1,12 +1,15 @@
 SHELL := /bin/bash
 
-# Make is verbose in Linux. Make it silent.
-# MAKEFLAGS += --silent
+VERBOSE ?= 0
+ifeq ($(VERBOSE), 0)
+# Make is verbose in Linux: let's make it silent.
+MAKEFLAGS += --silent
+endif
 
 VERSION := $(shell git describe --tags 2> /dev/null || echo "0.0.0")
 BUILD := $(shell git rev-parse --short HEAD 2> /dev/null)
 COMMIT := $(if $(shell git status --porcelain --untracked-files=no),${BUILD}-dirty,${BUILD})
-PROJECTNAME := "maintainers-generator"
+PROJECTNAME := maintainers-generator
 BASE := $(shell pwd)
 OUTPUT := $(BASE)/bin
 
@@ -17,8 +20,9 @@ LDFLAGS=-ldflags "-X=github.com/leodido/$(PROJECTNAME)/pkg/version.version=$(VER
 # Redirect error output to a file, so we can show it in development mode.
 STDERR := "/tmp/.$(PROJECTNAME)-stderr.txt"
 
+.PHONY: build
 build: $(GOFILES)
-	echo "  >  Building binary from: $(GOFILES)"
+	@echo "  >  Building binary..."
 	touch $(STDERR)
 	rm $(STDERR)
 	mkdir -p $(OUTPUT)
@@ -27,9 +31,9 @@ build: $(GOFILES)
 
 test:
 	@echo "  >  Executing tests..."
-	@env GOTRACEBACK=all go test ./...
+	env GOTRACEBACK=all go test ./...
 
 clean:
 	@echo "  >  Cleaning build cache"
-	@-rm $(OUTPUT)/$(PROJECTNAME) 2> /dev/null
-	@go clean
+	rm $(OUTPUT)/$(PROJECTNAME) 2> /dev/null
+	go clean

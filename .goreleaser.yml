@@ -10,12 +10,11 @@ builds:
       - amd64
     hooks:
       post:
-        - make build
-        - cat /tmp/.maintainers-generator-stderr.txt
+        - make VERBOSE=1 build
         - mv -f bin/maintainers-generator bin/maintainers-generator_linux_amd64/
 
 changelog:
-  sort: asc
+  sort: desc
   filters:
     exclude:
       - "^deps:"

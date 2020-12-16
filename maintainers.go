@@ -123,7 +123,12 @@ func getMaintainers(ghClient github.Client, gitClient *git.Client, opts *Options
 			Projects: []string{},
 		}
 		for _, p := range projects {
-			m.Projects = append(m.Projects, fmt.Sprintf("%s/%s/%s", host, opts.org, p))
+			parts := strings.Split(p, "/")
+			if len(parts) > 2 {
+				parts[2] = fmt.Sprintf("tree/master/%s", parts[2])
+			}
+			p = strings.Join(parts[:], "/")
+			m.Projects = append(m.Projects, fmt.Sprintf("%s/%s", host, p))
 		}
 
 		res = append(res, m)

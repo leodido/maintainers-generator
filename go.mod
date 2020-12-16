@@ -3,14 +3,14 @@ module github.com/leodido/maintainers-generator
 go 1.14
 
 replace (
+	github.com/dgrijalva/jwt-go/v4 => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
+	github.com/googleapis/gnostic => github.com/googleapis/gnostic v0.4.1
 	k8s.io/api => k8s.io/api v0.19.3
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.3
 	k8s.io/apimachinery => k8s.io/apimachinery v0.19.3
 	k8s.io/apiserver => k8s.io/apiserver v0.19.3
 	k8s.io/client-go => k8s.io/client-go v0.19.3
 	k8s.io/code-generator => k8s.io/code-generator v0.19.3
-	github.com/googleapis/gnostic => github.com/googleapis/gnostic v0.4.1
-	github.com/dgrijalva/jwt-go/v4 => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 )
 
 require (

@@ -23,6 +23,7 @@ type Options struct {
 	dedupe         bool
 	sort           bool
 	personsFile    string
+	outputFile     string
 	personsSupport bool
 }
 
@@ -78,6 +79,7 @@ func NewOptions() *Options {
 	fs.StringVar(&o.org, "org", "", "The GitHub organization name.")
 	fs.StringVar(&o.repo, "repo", "", "The GitHub repository name.")
 	fs.StringVar(&o.personsFile, "persons-db", "data/data.json", "The path to a JSON file containing handle => name/company mappings")
+	fs.StringVar(&o.outputFile, "output", "stdout", "The path where to write the output YAML maintainers")
 
 	for _, group := range []flagutil.OptionGroup{&o.github} {
 		group.AddFlags(fs)

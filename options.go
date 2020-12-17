@@ -15,7 +15,6 @@ import (
 type Options struct {
 	dryRun         bool
 	github         prowflagutil.GitHubOptions
-	hmacSecret     string
 	version        bool
 	logLevel       string
 	org            string
@@ -25,6 +24,7 @@ type Options struct {
 	personsFile    string
 	outputFile     string
 	personsSupport bool
+	banner         bool
 }
 
 // Validate validates the receiving options.
@@ -68,8 +68,7 @@ func (o *Options) Validate() error {
 func NewOptions() *Options {
 	o := Options{}
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	fs.BoolVar(&o.dryRun, "dry-run", true, "Dry run for testing (uses API tokens but does not mutate).")
-	fs.StringVar(&o.hmacSecret, "hmac", "/etc/webhook/hmac", "Path to the file containing the GitHub HMAC secret.")
+	fs.BoolVar(&o.dryRun, "dry-run", false, "Dry run for testing (uses API tokens but does not mutate).")
 	fs.BoolVar(&o.version, "version", false, "Print the version.")
 	fs.BoolVar(&o.dedupe, "dedupe", true, "Whether to dedupe or not sub-project areas for every maintainer.")
 	fs.BoolVar(&o.sort, "sort", true, "Whether to sort the projects alphabetically.")
@@ -80,6 +79,7 @@ func NewOptions() *Options {
 	fs.StringVar(&o.repo, "repo", "", "The GitHub repository name.")
 	fs.StringVar(&o.personsFile, "persons-db", "data/data.json", "The path to a JSON file containing handle => name/company mappings")
 	fs.StringVar(&o.outputFile, "output", "stdout", "The path where to write the output YAML maintainers")
+	fs.BoolVar(&o.banner, "banner", false, "Whether you want a header on top of the output YAML maintainers file")
 
 	for _, group := range []flagutil.OptionGroup{&o.github} {
 		group.AddFlags(fs)

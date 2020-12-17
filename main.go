@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 
@@ -53,5 +54,29 @@ func main() {
 	if err != nil {
 		logrus.WithError(err).Fatal("Unable to generate YAML maintainers file.")
 	}
-	fmt.Fprintf(os.Stdout, out)
+
+	var output *os.File
+	if o.outputFile == "stdout" || o.outputFile == "/dev/stdout" {
+		output = os.Stdout
+	} else {
+		output, err = os.Create(o.outputFile)
+		if err != nil {
+			logrus.WithError(err).WithField("output", o.outputFile).Fatal("Unable to create output file.")
+		}
+		defer func() {
+			if err := output.Close(); err != nil {
+				logrus.WithError(err).WithField("output", o.outputFile).Fatal("Unable to close output file.")
+			}
+		}()
+	}
+
+	w := bufio.NewWriter(output)
+	n, err := w.WriteString(out)
+	if err != nil {
+		logrus.WithError(err).WithField("output", o.outputFile).Fatal("Unable to write output file.")
+	}
+	w.Flush()
+	if o.outputFile != "stdout" {
+		logrus.WithField("no. of bytes", n).Info("Wrote output file.")
+	}
 }

@@ -46,7 +46,7 @@ func (o *Options) Validate() error {
 	}
 
 	if _, err := os.Stat(o.personsFile); err == nil {
-		if filepath.Ext(o.personsFile) == "json" {
+		if filepath.Ext(o.personsFile) == ".json" {
 			o.personsSupport = true
 		} else {
 			o.personsSupport = false

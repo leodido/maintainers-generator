@@ -73,6 +73,14 @@ Which will output a YAML to STDOUT like the following one:
   - https://github.com/falcosecurity/falcosecurity/client-rs
 ```
 
+## TODOs
+
+- Extensive test suite
+- Complete support for the [OWNERS spec](https://github.com/kubernetes/community/blob/master/contributors/guide/owners.md)
+  - Support for `no_parent_owners: true`
+  - Support for OWNERS file with `filters`
+  - Support for `emeritus_approvers`
+
 ---
 
 [![Analytics](https://ga-beacon.appspot.com/UA-49657176-1/maintainers-generator?flat)](https://github.com/igrigorik/ga-beacon)

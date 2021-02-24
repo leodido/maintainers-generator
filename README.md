@@ -5,7 +5,7 @@
 ## Install
 
 ```console
-go get github.com/leodido/mantainers-generator
+go get github.com/leodido/maintainers-generator
 ```
 
 ## Usage

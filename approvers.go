@@ -58,8 +58,8 @@ func processApprovers(v reflect.Value, out *map[string][]string) error {
 	return nil
 }
 
-func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool) (map[string][]string, error) {
-	owners, err := ownersClient.LoadRepoOwners(org, repo, "master")
+func getApprovers(ownersClient *repoowners.Client, org, repo, branch string, dedupe bool) (map[string][]string, error) {
+	owners, err := ownersClient.LoadRepoOwners(org, repo, branch)
 	if err != nil {
 		logrus.WithError(err).WithField("organization", org).WithField("repository", repo).Fatal("Unable to fetch OWNERS.")
 	}
@@ -82,7 +82,7 @@ func getApprovers(ownersClient *repoowners.Client, org, repo string, dedupe bool
 			if v != "" {
 				v = fmt.Sprintf("/%s", v)
 			}
-			newvalues = append(newvalues, fmt.Sprintf("%s/%s%s", org, repo, v))
+			newvalues = append(newvalues, fmt.Sprintf("%s/%s:%s%s", org, repo, branch, v))
 		}
 		result[k] = newvalues
 	}

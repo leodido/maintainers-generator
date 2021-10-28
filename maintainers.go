@@ -51,8 +51,9 @@ func getMaintainers(ghClient github.Client, gitClient *git.Client, opts *Options
 		}
 	} else {
 		repos = append(repos, Repository{
-			Org:  opts.org,
-			Repo: opts.repo,
+			Org:    opts.org,
+			Repo:   opts.repo,
+			Branch: opts.branch,
 		})
 	}
 
@@ -72,7 +73,7 @@ func getMaintainers(ghClient github.Client, gitClient *git.Client, opts *Options
 	// Get approvers from OWNER files for every repo
 	maintainers := map[string][]string{}
 	for _, v := range repos {
-		approvers, err := getApprovers(ownersClient, v.Org, v.Repo, opts.dedupe)
+		approvers, err := getApprovers(ownersClient, v.Org, v.Repo, v.Branch, opts.dedupe)
 		if err != nil {
 			logrus.WithField("organization", v.Org).WithField("repository", v.Repo).Error(err)
 		}
@@ -125,7 +126,9 @@ func getMaintainers(ghClient github.Client, gitClient *git.Client, opts *Options
 		for _, p := range projects {
 			parts := strings.Split(p, "/")
 			if len(parts) > 2 {
-				parts[2] = fmt.Sprintf("tree/master/%s", parts[2])
+				repoparts := strings.Split(parts[1], ":")
+				parts[1] = repoparts[0]
+				parts[2] = fmt.Sprintf("tree/%s/%s", repoparts[1], parts[2])
 			}
 			p = strings.Join(parts[:], "/")
 			m.Projects = append(m.Projects, fmt.Sprintf("%s/%s", host, p))

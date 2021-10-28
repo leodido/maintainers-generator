@@ -19,6 +19,7 @@ type Options struct {
 	logLevel       string
 	org            string
 	repo           string
+	branch         string
 	dedupe         bool
 	sort           bool
 	personsFile    string
@@ -77,6 +78,7 @@ func NewOptions() *Options {
 	fs.StringVar(&o.logLevel, "log-level", "info", "Log level.")
 	fs.StringVar(&o.org, "org", "", "The GitHub organization name.")
 	fs.StringVar(&o.repo, "repo", "", "The GitHub repository name.")
+	fs.StringVar(&o.branch, "branch", "master", "The repository branch name (only used if repo is specified).")
 	fs.StringVar(&o.personsFile, "persons-db", "data/data.json", "The path to a JSON file containing handle => name/company mappings")
 	fs.StringVar(&o.outputFile, "output", "stdout", "The path where to write the output YAML maintainers")
 	fs.BoolVar(&o.banner, "banner", false, "Whether you want a header on top of the output YAML maintainers file")

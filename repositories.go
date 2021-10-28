@@ -8,8 +8,9 @@ import (
 
 // Repository represents the full name of a repo.
 type Repository struct {
-	Org  string
-	Repo string
+	Org    string
+	Repo   string
+	Branch string
 }
 
 func getRepositories(ghClient github.Client, org string) ([]Repository, error) {
@@ -29,8 +30,9 @@ func getRepositories(ghClient github.Client, org string) ([]Repository, error) {
 			continue
 		}
 		repos = append(repos, Repository{
-			Org:  org,
-			Repo: v.Name,
+			Org:    org,
+			Repo:   v.Name,
+			Branch: v.DefaultBranch,
 		})
 	}
 	if len(repos) == 0 {

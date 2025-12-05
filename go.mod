@@ -14,7 +14,7 @@ replace (
 )
 
 require (
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.8.3
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
 	k8s.io/test-infra v0.0.0-20201215091550-bbb9e1eb2f91
